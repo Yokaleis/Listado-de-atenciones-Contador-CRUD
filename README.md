@@ -2,4 +2,4 @@
 
 Proyecto realizado en React + Vite
 
-![Image text]()
+![Image text](https://github.com/Yokaleis/Listado-de-atenciones-Contador-CRUD/blob/main/src/assets/Cover.png)
