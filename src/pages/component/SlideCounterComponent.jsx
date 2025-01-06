@@ -1,7 +1,6 @@
 import { React, useState } from 'react'
-import { ArrowLeft, ArrowRight, minusDot } from '../Icons/iconsSVG'
 import { RxDotFilled } from 'react-icons/rx'
-import { FirstGroupSlide, SecondGroupSlide, ThirdGroupSlide, FourGroupSlide } from '../Card/CardComponent'
+import { FirstGroupSlide, SecondGroupSlide, ThirdGroupSlide, FourGroupSlide } from '../../components/Card/CardComponent'
 
 const slides = [
     {
@@ -56,7 +55,7 @@ export function SlideCounterInterconsultas() {
     }
     return (
      <>
-     <div className='max-w-[700px] w-[700px] h-auto relative group'>
+     <div className='max-w-[600px] w-[600px] h-auto relative group'>
         <div>
             {slidesInterconsultas[currentIndex].slide1}
         </div>

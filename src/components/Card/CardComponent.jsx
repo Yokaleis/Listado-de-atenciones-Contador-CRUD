@@ -1,8 +1,11 @@
 import { people } from "../../mockups/mockupsData";
+import { useSelector } from "react-redux"
+
 
 import { LabIcon, RayosXIcon, EcoIcon, InterconsultaIcon, TratamientoIcon, ProcedientoIcon } from "../Icons/iconsSVG";
 
 export function CardComponent( { nombre, atenciones, icono } ) {
+  const usuariosState = useSelector( state => state.usuarios)
     return(
         <div className="grid grid-flow-col auto-cols-max gap-4 p-4 bg-white border border-gray-200 rounded-lg justify-between shadow-100">
                 <div className="px-2 py-2 bg-green-100">{icono}</div>

@@ -1,5 +1,11 @@
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+
 import { LogoSOIVIcon } from '../Icons/iconsSVG'
-export function Sidebar() {
+export function SidebarComponent() {
+
+
+
     return(
         <>
            <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
@@ -12,6 +18,7 @@ export function Sidebar() {
                <span className="ml-3">Home</span>
             </a>
          </li>
+         
          <li>
             <button type="button" className="flex items-center w-full p-2 mb-10 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
                   <span className="flex-1 ml-3 text-left whitespace-nowrap">Administración</span>
