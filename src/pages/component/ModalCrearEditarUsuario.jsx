@@ -1,81 +1,72 @@
 import { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
-import { addUsuario, updateUsuario } from "../../features/usuarios/usuariosSlice"
+import { addUsuario, updateUsuario, clearEdit } from "../../features/usuarios/usuariosSlice"
 import { v4 as uuid } from "uuid"
-import { useNavigate, Link } from "react-router-dom"
+import { useNavigate, Link, useParams } from "react-router-dom"
 import { ButtonCancel, ButtonPrimary, ButtonSecondary } from "../../pages/component/Buttons"
+import { SelectServicio } from "./Select"
 
-export function CrearUsuario(){
-    const params = useParams();
-    const usuarios = useSelector( state => state.usuarios)
-    const [nuevoUsuario, setNuevoUsuario] = useState({
-        id: '',
-        atencion: '',
-        nombre: '',
-        cedula: '',
-        edad: '',
-        aseguradora: '',
-        servicio: [],
-        creacion: '',
-        via: ''
-    })
-    const navigate = useNavigate();
+export function ModalCrearyEditar(){
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const {id} = useParams();
+  const userToEdit = useSelector((state) => state.usuarios.userToEdit);
+  const isEditing = useSelector((state) => state.usuarios.isEditing);
+  const usuarios = useSelector((state) => state.usuarios.usuarios);
 
 
-    const handleMultiSelectChange = (event) => {
-        let value = Array.from(event.target.selectedOptions, option => option.value);
-        setNuevoUsuario({
-          ...nuevoUsuario,
-          servicio: value
-        });
-      };
-/*     const handleSelectChange = ( event ) => {
-        console.log('Seleccionado: ', event);
-        setNuevoUsuario(event)
-      };
-    
- */
-    const dispatch = useDispatch()
-    const handleChange = ( event ) => {
-        //console.log(e.target.name, e.target.value)
-        setNuevoUsuario({
-            ...nuevoUsuario,
-            [event.target.name]: event.target.value,
-        })
+  const [nombre, setNombre] = useState("");
+  const [cedula, setCedula] = useState("");
+  const [edad, setEdad] = useState("");
+  const [aseguradora, setAseguradora] = useState("");
+  const [servicio, setServicio] = useState([]);
+  const [creacion, setCreacion] = useState("");
+
+  useEffect(() => {
+    if (isEditing && userToEdit) {
+      setNombre(userToEdit.nombre);
+      setCedula(userToEdit.cedula);
+      setEdad(userToEdit.edad);
+      setAseguradora(userToEdit.aseguradora);
+      setServicio(userToEdit.servicio.map((servicio) => servicio.value) || [] );
+      setCreacion(userToEdit.creacion);
+    } else {
+      setNombre("");
+      setCedula("");
+      setEdad("");
+      setAseguradora("");
+      setServicio([]);
+      setCreacion("");
     }
+  }, [isEditing, userToEdit]);
 
     const handleSubmit = (e) => {
-        e.preventDefault();
-        if (params.id) {
-            dispatch(
-                updateUsuario(nuevoUsuario)
-            )
-        } else {
-            dispatch(
-            addUsuario({
-                ...nuevoUsuario,
-                id: uuid(),  
-            }))
-        e.target.reset() 
-        }
-        
-        navigate('/aurgentcare')
-        // console.log(nuevoUsuario)
-    }
-    useEffect(() => {
-        console.log('Ha cambiado el contador!')
-        if(params.id){
-            console.log('Esto es el params ', params)
-            setNuevoUsuario(usuarios.find((usuario) => usuario.id === params.id))
-        }
-      }, [params, usuarios])
-        
+      e.preventDefault();
+      const user = {
+        id,
+        nombre,
+        cedula,
+        edad,
+        servicio: servicio,
+        aseguradora,
+        creacion,
+      }
+      if (isEditing) {
+        const index = usuarios.findIndex((u) => u.index === userToEdit.index);
+      dispatch(updateUsuario({ index, user }))
+      } else {
+        dispatch(addUsuario({  id, nombre, cedula, edad, aseguradora, servicio, creacion }));
+      }
+      dispatch(clearEdit());
+      navigate('/aurgentcare');
+    };
+
+
     return (
       <>
         <div>
-          <h1 className="text-3xl font-bold mb-10">Crear nueva atención</h1>
-          <p>Modal Orginal</p>
+          <h1 className="text-3xl font-bold mb-10">{isEditing ? 'Editando' : 'Crear una nueva 😄'} atención</h1>
+
           <form onSubmit={handleSubmit}>
             {/* GRID FORM */}
 
@@ -92,8 +83,8 @@ export function CrearUsuario(){
                     name="nombre"
                     placeholder="Teresa Millán"
                     className="w-full p-2 outline-none rounded-lg bg-secondary-900"
-                    onChange={handleChange}
-                    value={nuevoUsuario.nombre}
+                    onChange={(e) => setNombre(e.target.value)}
+                    value={nombre}
                   />
                 </div>
               </div>
@@ -109,8 +100,8 @@ export function CrearUsuario(){
                     id="cedula"
                     placeholder="6123321"
                     className="w-full p-2 outline-none rounded-lg bg-secondary-900"
-                    onChange={handleChange}
-                    value={nuevoUsuario.cedula}
+                    onChange={(e) => setCedula(e.target.value)}
+                    value={cedula}
                   />
                 </div>
               </div>
@@ -126,8 +117,8 @@ export function CrearUsuario(){
                     id="edad"
                     placeholder="52"
                     className="w-full p-2 outline-none rounded-lg bg-secondary-900"
-                    onChange={handleChange}
-                    value={nuevoUsuario.edad}
+                    onChange={(e) => setEdad(e.target.value)}
+                    value={edad}
                   />
                 </div>
               </div>
@@ -141,8 +132,8 @@ export function CrearUsuario(){
                     name="aseguradora"
                     id="aseguradra"
                     className="w-full rounded-lg"
-                    onChange={handleChange}
-                    value={nuevoUsuario.aseguradora}
+                    onChange={(e) => setAseguradora(e.target.value)}
+                    value={aseguradora}
                   >
                     <option value="Seguros Caracas">Seguros Caracas</option>
                     <option value="Seguros Mercantil">Seguros Mercantil</option>
@@ -157,19 +148,20 @@ export function CrearUsuario(){
                  Servicios
                 </label>
                 <div>
-                  <select
+                  <SelectServicio name="servicio" value={ servicio.length > 0 ? servicio.label : []  } onChange={setServicio}/>
+                  {/* <select
                     name="servicio"
                     className="w-full rounded-lg"
                     id="servicio"
-                    onChange={handleMultiSelectChange}
-                    value={nuevoUsuario.servicio}
+                    onChange={(e) => setServicio(e.target.value)}
+                    value={servicio}
                   >
                     <option value="Laboratorio">Laboratorio</option>
                     <option value="Ecografia">Ecografía</option>
                     <option value="RayosX">Rayos X</option>
                     <option value="Procedimiento">Procedimiento</option>
                     <option value="Cirugia">Cirugía</option>
-                  </select>
+                  </select> */}
                 </div>
               </div>
               {/* FECHA */}
@@ -185,8 +177,8 @@ export function CrearUsuario(){
                     id="creacion"
                     placeholder="Teresa Millán"
                     className="w-full p-2 outline-none rounded-lg bg-secondary-900"
-                    onChange={handleChange}
-                    value={nuevoUsuario.creacion}
+                    onChange={(e) => setCreacion(e.target.value)}
+                    value={creacion}
                   />
                 </div>
                 </div>
@@ -195,8 +187,8 @@ export function CrearUsuario(){
 
             <div>
               <button className="mr-6" type="submit">
-                <ButtonPrimary text="Guardar" />
-              </button>
+                
+                {isEditing ? <ButtonPrimary text="Editar"/> : <ButtonPrimary text="Agregar"/>}</button>
               <Link to={"/aurgentcare"}>
                 <ButtonCancel text="Cancelar" />
               </Link>
