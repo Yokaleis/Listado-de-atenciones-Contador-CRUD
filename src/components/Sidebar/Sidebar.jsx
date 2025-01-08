@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 /* REACT ICONS */
 import { HiChevronDown } from "react-icons/hi";
 /* SVGs */
-import { LogoSOIVIcon } from '../Icons/iconsSVG';
+import { LogoCuraDigitalIcon } from '../Icons/iconsSVG';
 
 
 
@@ -17,7 +17,7 @@ export function Sidebar() {
         ${showMenu ? "left-0" : "-left-full"} transition-all`}>
             {/* LOGO */}
             <div>
-            <div className='mb-20 flex justify-center'><LogoSOIVIcon/></div>
+            <div className='m-4 flex justify-center'><LogoCuraDigitalIcon/></div>
             <ul>
                 <li className='mb-8'>
                     <Link to="/home" className="w-full flex items-center justify-between gap-4 py-2 px-4 font-bold hover:text-primary transition-colors">Home</Link>
